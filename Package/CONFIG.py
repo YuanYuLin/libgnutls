@@ -17,6 +17,7 @@ def set_global(args):
     global dst_lib_dir
     global src_include_dir
     global dst_include_dir
+    global tmp_include_dir
     pkg_path = args["pkg_path"]
     output_dir = args["output_path"]
     arch = ops.getEnv("ARCH_ALT")
@@ -30,7 +31,8 @@ def set_global(args):
         sys.exit(1)
     dst_lib_dir = ops.path_join(output_dir, "lib")
 
-    src_include_dir = iopc.getBaseRootFile("usr/include/gnutls")
+    src_include_dir = iopc.getBaseRootFile("usr/include")
+    tmp_include_dir = ops.path_join(output_dir, ops.path_join("include",args["pkg_name"]))
     dst_include_dir = ops.path_join("include",args["pkg_name"])
 
 
@@ -61,6 +63,10 @@ def MAIN_EXTRACT(args):
     ops.ln(dst_lib_dir, "libgnutlsxx.so.28.1.0", "libgnutlsxx.so.28.1")
     ops.ln(dst_lib_dir, "libgnutlsxx.so.28.1.0", "libgnutlsxx.so.28")
     ops.ln(dst_lib_dir, "libgnutlsxx.so.28.1.0", "libgnutlsxx.so")
+
+    ops.mkdir(tmp_include_dir)
+    ops.copyto(ops.path_join(src_include_dir, 'gnutls'), tmp_include_dir)
+
     return True
 
 def MAIN_PATCH(args, patch_group_name):
@@ -83,7 +89,7 @@ def MAIN_BUILD(args):
 
 def MAIN_INSTALL(args):
     set_global(args)
-
+    '''
     iopc.installBin(args["pkg_name"], ops.path_join(src_include_dir, "abstract.h"), dst_include_dir)
     iopc.installBin(args["pkg_name"], ops.path_join(src_include_dir, "compat.h"), dst_include_dir)
     iopc.installBin(args["pkg_name"], ops.path_join(src_include_dir, "crypto.h"), dst_include_dir)
@@ -104,8 +110,24 @@ def MAIN_INSTALL(args):
     iopc.installBin(args["pkg_name"], ops.path_join(src_include_dir, "urls.h"), dst_include_dir)
     iopc.installBin(args["pkg_name"], ops.path_join(src_include_dir, "x509-ext.h"), dst_include_dir)
     iopc.installBin(args["pkg_name"], ops.path_join(src_include_dir, "x509.h"), dst_include_dir)
-
+    '''
+    iopc.installBin(args["pkg_name"], ops.path_join(tmp_include_dir, "."), dst_include_dir)
     iopc.installBin(args["pkg_name"], ops.path_join(dst_lib_dir, "."), "lib") 
+    return False
+
+def MAIN_SDKENV(args):
+    set_global(args)
+
+    sdkinclude_dir = ops.path_join(iopc.getSdkPath(), 'usr/include/' + args["pkg_name"])
+    cflags = ""
+    cflags += " -I" + sdkinclude_dir
+    cflags += " -I" + ops.path_join(sdkinclude_dir, "gnutls")
+    iopc.add_includes(cflags)
+
+    libs = ""
+    libs += " -lgnutls-dane -lgnutls-openssl -lgnutls -lgnutlsxx"
+    iopc.add_libs(libs)
+
     return False
 
 def MAIN_CLEAN_BUILD(args):
