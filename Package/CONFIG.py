@@ -44,25 +44,38 @@ def MAIN_EXTRACT(args):
     set_global(args)
 
     ops.mkdir(dst_lib_dir)
-    ops.copyto(ops.path_join(src_usr_lib_dir, "libgnutls-dane.so.0.4.1"), dst_lib_dir)
-    ops.ln(dst_lib_dir, "libgnutls-dane.so.0.4.1", "libgnutls-dane.so.0.4")
-    ops.ln(dst_lib_dir, "libgnutls-dane.so.0.4.1", "libgnutls-dane.so.0")
-    ops.ln(dst_lib_dir, "libgnutls-dane.so.0.4.1", "libgnutls-dane.so")
 
-    ops.copyto(ops.path_join(src_usr_lib_dir, "libgnutls-openssl.so.27.0.2"), dst_lib_dir)
-    ops.ln(dst_lib_dir, "libgnutls-openssl.so.27.0.2", "libgnutls-openssl.so.27.0")
-    ops.ln(dst_lib_dir, "libgnutls-openssl.so.27.0.2", "libgnutls-openssl.so.27")
-    ops.ln(dst_lib_dir, "libgnutls-openssl.so.27.0.2", "libgnutls-openssl.so")
+    lib_so = "libgnutls-deb0.so.28.41.0"
+    ops.copyto(ops.path_join(src_usr_lib_dir, lib_so), dst_lib_dir)
+    ops.ln(dst_lib_dir, lib_so, "libgnutls-deb0.so.28.41")
+    ops.ln(dst_lib_dir, lib_so, "libgnutls-deb0.so.28")
+    ops.ln(dst_lib_dir, lib_so, "libgnutls-deb0.so")
 
-    ops.copyto(ops.path_join(src_usr_lib_dir, "libgnutls.so.30.13.1"), dst_lib_dir)
-    ops.ln(dst_lib_dir, "libgnutls.so.30.13.1", "libgnutls.so.30.13")
-    ops.ln(dst_lib_dir, "libgnutls.so.30.13.1", "libgnutls.so.30")
-    ops.ln(dst_lib_dir, "libgnutls.so.30.13.1", "libgnutls.so")
+    ops.ln(dst_lib_dir, lib_so, "libgnutls.so")
 
-    ops.copyto(ops.path_join(src_usr_lib_dir, "libgnutlsxx.so.28.1.0"), dst_lib_dir)
-    ops.ln(dst_lib_dir, "libgnutlsxx.so.28.1.0", "libgnutlsxx.so.28.1")
-    ops.ln(dst_lib_dir, "libgnutlsxx.so.28.1.0", "libgnutlsxx.so.28")
-    ops.ln(dst_lib_dir, "libgnutlsxx.so.28.1.0", "libgnutlsxx.so")
+    lib_so = "libgnutls-openssl.so.27.0.2"
+    ops.copyto(ops.path_join(src_usr_lib_dir, lib_so), dst_lib_dir)
+    ops.ln(dst_lib_dir, lib_so, "libgnutls-openssl.so.27.0")
+    ops.ln(dst_lib_dir, lib_so, "libgnutls-openssl.so.27")
+    ops.ln(dst_lib_dir, lib_so, "libgnutls-openssl.so")
+
+    lib_so = "libgnutlsxx.so.28.1.0"
+    ops.copyto(ops.path_join(src_usr_lib_dir, lib_so), dst_lib_dir)
+    ops.ln(dst_lib_dir, lib_so, "libgnutlsxx.so.28.1")
+    ops.ln(dst_lib_dir, lib_so, "libgnutlsxx.so.28")
+    ops.ln(dst_lib_dir, lib_so, "libgnutlsxx.so")
+
+    lib_so = "libssl.so.1.0.0"
+    ops.copyto(ops.path_join(src_usr_lib_dir, lib_so), dst_lib_dir)
+    ops.ln(dst_lib_dir, lib_so, "libssl.so.1.0")
+    ops.ln(dst_lib_dir, lib_so, "libssl.so.1")
+    ops.ln(dst_lib_dir, lib_so, "libssl.so")
+
+    lib_so = "libcrypto.so.1.0.0"
+    ops.copyto(ops.path_join(src_usr_lib_dir, lib_so), dst_lib_dir)
+    ops.ln(dst_lib_dir, lib_so, "libcrypto.so.1.0")
+    ops.ln(dst_lib_dir, lib_so, "libcrypto.so.1")
+    ops.ln(dst_lib_dir, lib_so, "libcrypto.so")
 
     ops.mkdir(tmp_include_dir)
     ops.copyto(ops.path_join(src_include_dir, 'gnutls'), tmp_include_dir)
@@ -125,7 +138,7 @@ def MAIN_SDKENV(args):
     iopc.add_includes(cflags)
 
     libs = ""
-    libs += " -lgnutls-dane -lgnutls-openssl -lgnutls -lgnutlsxx"
+    libs += " -lgnutls-openssl -lgnutls -lgnutlsxx -lssl -lcrypto"
     iopc.add_libs(libs)
 
     return False
